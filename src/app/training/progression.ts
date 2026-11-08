@@ -19,6 +19,11 @@ import { ExerciseProgress, SessionRecord, TrainingState } from './training-state
  */
 
 const DAY = 86_400_000;
+const WEEK = 7 * DAY;
+/** Cada cuánto se propone una semana de descarga. */
+const DELOAD_EVERY = 6 * WEEK;
+/** Cuánto se aplaza el aviso de descarga al pulsar "Ahora no". */
+const DELOAD_SNOOZE = 3 * DAY;
 /** Repeticiones del test de máximo para pasar a dominadas con lastre. */
 const TEST_PASS_REPS = 8;
 /** Nivel de dominadas en el que se hace 5 × 5 y toca test para subir. */
@@ -46,6 +51,40 @@ function editableProgress(state: TrainingState, id: ExerciseId): ExerciseProgres
 
 export function isDeloadActive(state: TrainingState, now: number): boolean {
   return state.deload.until > now;
+}
+
+/** Toca proponer descarga: 6 semanas desde la última (o desde la primera sesión) y sin aplazar. */
+export function isDeloadDue(state: TrainingState, now: number): boolean {
+  if (isDeloadActive(state, now) || state.deload.snooze > now) return false;
+  const since = state.deload.last || state.sessions[0]?.date;
+  return !!since && now - since >= DELOAD_EVERY;
+}
+
+/** Empieza una semana de descarga: mismos ejercicios, mitad de series, nada sube. */
+export function startDeload(state: TrainingState, now: number): TrainingState {
+  return { ...state, deload: { ...state.deload, until: now + WEEK, last: now } };
+}
+
+export function endDeload(state: TrainingState): TrainingState {
+  return { ...state, deload: { ...state.deload, until: 0 } };
+}
+
+export function snoozeDeload(state: TrainingState, now: number): TrainingState {
+  return { ...state, deload: { ...state.deload, snooze: now + DELOAD_SNOOZE } };
+}
+
+/** Sube o baja un nivel a mano. El contador de sesiones al tope vuelve a cero. */
+export function changeLevel(state: TrainingState, id: ExerciseId, delta: 1 | -1): TrainingState {
+  const target = progressOf(state, id).step + delta;
+  if (target < 0 || target > lastLevelIndex(id)) return state;
+  const next = structuredClone(state);
+  const progress = editableProgress(next, id);
+  progress.prev = progress.step;
+  progress.step = target;
+  progress.hits = 0;
+  progress.last = 'manual';
+  progress.testDue = false;
+  return next;
 }
 
 export function lastSession(state: TrainingState): SessionRecord | null {

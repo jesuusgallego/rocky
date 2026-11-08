@@ -1,11 +1,18 @@
 import { ExerciseId, RoutineId } from './exercise-catalog';
 import {
   bestPullUps,
+  changeLevel,
+  endDeload,
+  exerciseStatus,
   finishSession,
+  isDeloadActive,
+  isDeloadDue,
   nextRoutine,
   planFor,
   recordMaxTest,
   recordSet,
+  snoozeDeload,
+  startDeload,
   visibleExercises,
 } from './progression';
 import { emptyState, ExerciseProgress, normalizeState, TrainingState } from './training-state';
@@ -127,5 +134,53 @@ describe('normalizeState', () => {
       ],
     });
     expect(state.sessions.length).toBe(1);
+  });
+});
+
+describe('deload', () => {
+  const DAY = 86_400_000;
+
+  function stateStartedDaysAgo(days: number): TrainingState {
+    const state = emptyState();
+    state.sessions.push({ type: 'A', date: NOW - days * DAY, entries: {} });
+    return state;
+  }
+
+  it('is proposed 6 weeks after the first session', () => {
+    expect(isDeloadDue(emptyState(), NOW)).toBe(false);
+    expect(isDeloadDue(stateStartedDaysAgo(41), NOW)).toBe(false);
+    expect(isDeloadDue(stateStartedDaysAgo(42), NOW)).toBe(true);
+  });
+
+  it('lasts one week once started, and can be ended early', () => {
+    const started = startDeload(stateStartedDaysAgo(50), NOW);
+    expect(isDeloadActive(started, NOW + 6 * DAY)).toBe(true);
+    expect(isDeloadActive(started, NOW + 8 * DAY)).toBe(false);
+    expect(isDeloadDue(started, NOW + 8 * DAY)).toBe(false); // cuenta desde la última descarga
+    expect(isDeloadActive(endDeload(started), NOW)).toBe(false);
+  });
+
+  it('is not proposed again for 3 days after "not now"', () => {
+    const snoozed = snoozeDeload(stateStartedDaysAgo(50), NOW);
+    expect(isDeloadDue(snoozed, NOW + 2 * DAY)).toBe(false);
+    expect(isDeloadDue(snoozed, NOW + 4 * DAY)).toBe(true);
+  });
+});
+
+describe('changeLevel', () => {
+  it('moves one level and resets the counter', () => {
+    const state = emptyState();
+    state.prog.push = progress(0, { hits: 1 });
+
+    const next = changeLevel(state, 'push', 1);
+    expect(next.prog.push).toMatchObject({ step: 1, hits: 0, last: 'manual', prev: 0 });
+    expect(exerciseStatus(next, 'push', NOW).text).toBe('Nivel cambiado a mano. Contador a cero.');
+  });
+
+  it('does not go below the first level or above the last one', () => {
+    const state = emptyState();
+    expect(changeLevel(state, 'push', -1)).toBe(state);
+    state.prog.push = progress(2); // Flexiones tiene 3 niveles
+    expect(changeLevel(state, 'push', 1)).toBe(state);
   });
 });

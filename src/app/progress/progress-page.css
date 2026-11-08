@@ -107,3 +107,7 @@ p {
   font-size: 0.9rem;
   font-weight: 600;
 }
+
+.deload-text {
+  margin: 8px 0 12px;
+}

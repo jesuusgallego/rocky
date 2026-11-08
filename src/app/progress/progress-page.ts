@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { NumberSheet } from '../shared/number-sheet/number-sheet';
 import { describeLevelFull, EXERCISES, ROUTINE_IDS, ROUTINES } from '../training/exercise-catalog';
-import { bestPullUps, progressOf } from '../training/progression';
+import { bestPullUps, isDeloadActive, progressOf } from '../training/progression';
 import { TrainingStore } from '../training/training-store';
 
 /** Objetivo de dominadas seguidas. */
@@ -15,7 +15,7 @@ const GOAL = 10;
   styleUrl: './progress-page.css',
 })
 export class ProgressPage {
-  private readonly store = inject(TrainingStore);
+  protected readonly store = inject(TrainingStore);
 
   protected readonly testSheetOpen = signal(false);
   protected readonly testMessage = signal('');
@@ -26,6 +26,18 @@ export class ProgressPage {
   protected readonly goalDots = computed(() =>
     Array.from({ length: GOAL }, (_, i) => ({ number: i + 1, done: i < this.best() })),
   );
+
+  /** Estado de la semana de descarga. */
+  protected readonly deload = computed(() => {
+    const { deload } = this.store.state();
+    const now = Date.now();
+    const weeksSinceLast = Math.floor((now - deload.last) / (7 * 86_400_000));
+    return {
+      active: isDeloadActive(this.store.state(), now),
+      until: deload.until,
+      weeksSinceLast: deload.last ? weeksSinceLast : null,
+    };
+  });
 
   /** Últimos 10 tests, del más reciente al más antiguo. */
   protected readonly tests = computed(() => this.store.state().tests.slice(-10).reverse());

@@ -72,6 +72,33 @@
 </section>
 
 <section class="card">
+  <h2 class="eyebrow">Semana de descarga</h2>
+  @let d = deload();
+  <p class="small deload-text">
+    @if (d.active) {
+      En descarga hasta el {{ d.until | date: "d 'de' MMMM" }}.
+    } @else if (d.weeksSinceLast === 0) {
+      Última descarga esta semana. Te la vuelvo a proponer a las 6.
+    } @else if (d.weeksSinceLast) {
+      Última descarga hace {{ d.weeksSinceLast }}
+      {{ d.weeksSinceLast === 1 ? 'semana' : 'semanas' }}. Te la vuelvo a proponer a las 6.
+    } @else {
+      Cada 6-8 semanas, una semana con la mitad de series. Te la propongo sola a las 6 semanas de
+      empezar, o empiézala antes si notas codos u hombros cargados.
+    }
+  </p>
+  @if (d.active) {
+    <button type="button" class="btn ghost small" (click)="store.endDeload()">
+      Terminar descarga
+    </button>
+  } @else {
+    <button type="button" class="btn ghost small" (click)="store.startDeload()">
+      Empezar descarga ahora
+    </button>
+  }
+</section>
+
+<section class="card">
   <h2 class="eyebrow">Sesiones</h2>
   @for (session of history(); track session.key) {
     <div class="row">

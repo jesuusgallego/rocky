@@ -79,6 +79,24 @@
       @if (card.exercise.kind === 'endless') {
         <p class="note">… y sigue igual, subiendo peso.</p>
       }
+      <div class="level-actions">
+        <button
+          type="button"
+          class="btn ghost small"
+          [disabled]="!canLevelDown()"
+          (click)="levelChanged.emit(-1)"
+        >
+          Bajar un nivel
+        </button>
+        <button
+          type="button"
+          class="btn ghost small"
+          [disabled]="!canLevelUp()"
+          (click)="levelChanged.emit(1)"
+        >
+          Subir un nivel
+        </button>
+      </div>
     }
   </details>
 </article>

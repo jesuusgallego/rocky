@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
+import { RestTimer } from '../rest-timer/rest-timer';
 import { NumberSheet } from '../shared/number-sheet/number-sheet';
 import { EXERCISES, ExerciseId, ROUTINE_IDS, ROUTINES, Unit } from '../training/exercise-catalog';
 import {
@@ -7,6 +8,7 @@ import {
   dayDiff,
   exerciseStatus,
   isDeloadActive,
+  isDeloadDue,
   lastSession,
   lastValue,
   planFor,
@@ -27,6 +29,8 @@ interface OpenSet {
   unit: Unit;
   initialValue: number;
   canRemove: boolean;
+  /** Segundos de descanso a arrancar al guardar, o null si no toca (última serie, test o corrección). */
+  restAfter: number | null;
 }
 
 /** Qué mostrar arriba: entrenar, sesión en curso, ya entrenaste hoy o ayer. */
@@ -42,6 +46,7 @@ const RING_LENGTH = 169.6; // perímetro del círculo de progreso (2 · π · 27
 })
 export class TodayPage {
   protected readonly store = inject(TrainingStore);
+  private readonly restTimer = inject(RestTimer);
   protected readonly routineIds = ROUTINE_IDS;
   protected readonly now = Date.now();
   protected readonly icons: Record<ResultKind, string> = {
@@ -112,6 +117,8 @@ export class TodayPage {
       ringOffset: (RING_LENGTH * (1 - (totalSets ? doneSets / totalSets : 0))).toFixed(1),
       later: mode === 'rest' || mode === 'done',
       deload: isDeloadActive(state, now),
+      deloadDue: isDeloadDue(state, now),
+      deloadUntil: state.deload.until,
     };
   });
 
@@ -171,12 +178,21 @@ export class TodayPage {
       unit: exercise.unit,
       initialValue: current ?? suggested,
       canRemove: current !== undefined,
+      restAfter:
+        current === undefined && !plan.isTest && index < plan.sets - 1
+          ? exercise.restSeconds
+          : null,
     });
   }
 
   protected saveSet(set: OpenSet, value: number): void {
     this.store.recordSet(set.id, set.index, value);
     this.openSet.set(null);
+    if (set.restAfter) this.restTimer.start(set.restAfter, set.title);
+  }
+
+  protected changeLevel(card: ExerciseCardData, delta: 1 | -1): void {
+    this.store.changeLevel(card.id, delta);
   }
 
   protected removeSet(set: OpenSet): void {
@@ -185,13 +201,16 @@ export class TodayPage {
   }
 
   protected finish(): void {
+    this.restTimer.stop();
     this.summary.set(this.store.finishSession());
     window.scrollTo(0, 0);
   }
 
   protected discard(): void {
-    if (confirm('¿Descartar la sesión? Se borran las series anotadas.'))
+    if (confirm('¿Descartar la sesión? Se borran las series anotadas.')) {
+      this.restTimer.stop();
       this.store.discardSession();
+    }
   }
 
   protected exerciseName(id: ExerciseId): string {

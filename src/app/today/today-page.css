@@ -207,3 +207,31 @@ h1 {
   font-size: 0.85rem;
   color: var(--muted);
 }
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  color: var(--edge);
+  background: var(--edge-soft);
+  border-radius: 16px;
+}
+
+.banner.info {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.banner p {
+  margin: 0;
+}
+
+.banner .btn {
+  align-self: flex-start;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 8px;
+}

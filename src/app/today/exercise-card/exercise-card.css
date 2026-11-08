@@ -207,3 +207,13 @@ h3 {
   font-size: 0.75rem;
   color: var(--accent);
 }
+
+.level-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.level-actions .btn {
+  flex: 1;
+}

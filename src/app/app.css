@@ -2,7 +2,8 @@
   display: block;
   max-width: 640px;
   margin: 0 auto;
-  padding: 16px 16px 48px;
+  /* Hueco abajo para que la barra de descanso no tape lo último */
+  padding: 16px 16px 112px;
 }
 
 .top {

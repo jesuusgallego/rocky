@@ -5,6 +5,7 @@ import {
   ExerciseId,
   formatRest,
   formatTarget,
+  lastLevelIndex,
 } from '../../training/exercise-catalog';
 import { ExerciseStatus, Plan } from '../../training/progression';
 
@@ -37,6 +38,11 @@ export class ExerciseCard {
   readonly data = input.required<ExerciseCardData>();
   /** Se emite con el número de serie que el usuario quiere anotar o corregir. */
   readonly setSelected = output<number>();
+  /** Se emite con +1 o -1 al subir o bajar un nivel a mano. */
+  readonly levelChanged = output<1 | -1>();
+
+  protected readonly canLevelDown = computed(() => this.data().step > 0);
+  protected readonly canLevelUp = computed(() => this.data().step < lastLevelIndex(this.data().id));
 
   protected readonly isDone = computed(() => this.data().values.length >= this.data().plan.sets);
   protected readonly target = computed(() =>

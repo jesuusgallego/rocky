@@ -1,0 +1,21 @@
+@if (timer.running()) {
+  <div class="bar" role="timer" [attr.aria-label]="'Descanso: quedan ' + time()">
+    <svg class="ring" viewBox="0 0 48 48" aria-hidden="true">
+      <circle class="ring-bg" cx="24" cy="24" r="20" />
+      <circle
+        class="ring-fg"
+        cx="24"
+        cy="24"
+        r="20"
+        stroke-dasharray="125.7"
+        [attr.stroke-dashoffset]="ringOffset()"
+      />
+    </svg>
+    <div class="text">
+      <p class="time">{{ time() }}</p>
+      <p class="label">Descanso · {{ timer.label() }}</p>
+    </div>
+    <button type="button" (click)="timer.addSeconds(15)">+15 s</button>
+    <button type="button" (click)="timer.stop()">Saltar</button>
+  </div>
+}

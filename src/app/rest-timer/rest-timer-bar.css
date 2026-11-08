@@ -1,0 +1,74 @@
+.bar {
+  position: fixed;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  left: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 616px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  color: var(--hero-ink);
+  background: var(--hero);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.4);
+}
+
+.ring {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+
+.ring circle {
+  fill: none;
+  stroke-width: 5;
+}
+
+.ring-bg {
+  stroke: var(--hero-line);
+}
+
+.ring-fg {
+  stroke: var(--hero-accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.25s linear;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.text p {
+  margin: 0;
+}
+
+.time {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  overflow: hidden;
+  font-size: 0.8rem;
+  color: var(--hero-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+button {
+  flex: none;
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--hero-ink);
+  background: var(--hero-line);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}

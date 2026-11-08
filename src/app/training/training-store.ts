@@ -1,7 +1,9 @@
 import { computed, Service, signal } from '@angular/core';
 import { ExerciseId, RoutineId } from './exercise-catalog';
 import {
+  changeLevel,
   discardDraft,
+  endDeload,
   ExerciseResult,
   finishSession,
   nextRoutine,
@@ -9,6 +11,8 @@ import {
   recordSet,
   removeSet,
   SessionSummary,
+  snoozeDeload,
+  startDeload,
 } from './progression';
 import { looksLikeBackup, normalizeState, TrainingState } from './training-state';
 
@@ -59,6 +63,22 @@ export class TrainingStore {
     const { state, result } = recordMaxTest(this.stateSignal(), reps, Date.now());
     this.commit(state);
     return result;
+  }
+
+  changeLevel(id: ExerciseId, delta: 1 | -1): void {
+    this.commit(changeLevel(this.stateSignal(), id, delta));
+  }
+
+  startDeload(): void {
+    this.commit(startDeload(this.stateSignal(), Date.now()));
+  }
+
+  endDeload(): void {
+    this.commit(endDeload(this.stateSignal()));
+  }
+
+  snoozeDeload(): void {
+    this.commit(snoozeDeload(this.stateSignal(), Date.now()));
   }
 
   /** Texto JSON con todos los datos. */

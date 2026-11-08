@@ -73,6 +73,31 @@
   </div>
 </section>
 
+@if (v.deload) {
+  <section class="banner info">
+    <p>
+      Semana de descarga hasta el {{ v.deloadUntil | date: "EEEE d 'de' MMMM" }}. Mismos ejercicios,
+      mitad de series y nada de buscar récords.
+    </p>
+    <button type="button" class="btn ghost small" (click)="store.endDeload()">
+      Terminar descarga
+    </button>
+  </section>
+} @else if (v.deloadDue) {
+  <section class="banner">
+    <p>
+      Llevas 6 semanas seguidas. Toca semana de descarga: mismos ejercicios, mitad de series. Es
+      cuando se asienta lo ganado.
+    </p>
+    <div class="banner-actions">
+      <button type="button" class="btn small" (click)="store.startDeload()">
+        Empezar descarga
+      </button>
+      <button type="button" class="btn ghost small" (click)="store.snoozeDeload()">Ahora no</button>
+    </div>
+  </section>
+}
+
 <section class="card verdict" aria-labelledby="verdict-title">
   <h2 class="eyebrow" id="verdict-title">{{ v.later ? '¿Subo en la próxima?' : '¿Subo hoy?' }}</h2>
   <ul class="rows">
@@ -94,7 +119,11 @@
 
 <div class="exercises">
   @for (card of v.cards; track card.id) {
-    <app-exercise-card [data]="card" (setSelected)="selectSet(card, $event)" />
+    <app-exercise-card
+      [data]="card"
+      (setSelected)="selectSet(card, $event)"
+      (levelChanged)="changeLevel(card, $event)"
+    />
   }
 </div>
 
