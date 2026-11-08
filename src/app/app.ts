@@ -1,12 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { WorkoutForm } from './workouts/workout-form/workout-form';
+import { WorkoutHistory } from './workouts/workout-history/workout-history';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [WorkoutForm, WorkoutHistory],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
-export class App {
-  protected readonly title = signal('rocky');
-}
+export class App {}
