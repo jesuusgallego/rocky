@@ -1,26 +1,54 @@
-/* Estilos globales: colores, tipografía y elementos comunes a toda la app. */
+/* Estilos globales: colores (modo claro y oscuro), tipografía y piezas comunes. */
 :root {
-  --bg: #f4f5f7;
-  --surface: #ffffff;
-  --text: #1c1e21;
-  --text-muted: #65676b;
-  --border: #dadde1;
-  --accent: #d93025;
-  --accent-hover: #b3261e;
-  --danger: #c5221f;
+  --paper: #e8ece5;
+  --card: #fafbf8;
+  --chip: #dde3da;
+  --ink: #121915;
+  --muted: #58655c;
+  --line: #cbd3c9;
+  --accent: #2344d8;
+  --accent-ink: #ffffff;
+  --accent-soft: #dee5fc;
+  --up: #1a6e44;
+  --up-soft: #d3ebdc;
+  --edge: #875d00;
+  --edge-soft: #f3e5b6;
+  --fail: #ae421d;
+  --fail-soft: #f5ddd2;
+  --signal: #e4b31e;
+  --hero: #121915;
+  --hero-ink: #eef2ec;
+  --hero-muted: #9ba89e;
+  --hero-line: #2a342d;
+  --hero-accent: #9db2ff;
+  --scrim: rgba(10, 14, 11, 0.5);
   color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #18191a;
-    --surface: #242526;
-    --text: #e4e6eb;
-    --text-muted: #b0b3b8;
-    --border: #3a3b3c;
-    --accent: #ff6b5e;
-    --accent-hover: #ff8a80;
-    --danger: #ff7b72;
+    --paper: #0e1210;
+    --card: #171d19;
+    --chip: #222a24;
+    --ink: #e7ece5;
+    --muted: #97a39a;
+    --line: #2a332d;
+    --accent: #8ea7ff;
+    --accent-ink: #0b1230;
+    --accent-soft: #1c2647;
+    --up: #78d8a2;
+    --up-soft: #14301e;
+    --edge: #eac84e;
+    --edge-soft: #342b10;
+    --fail: #f4a07f;
+    --fail-soft: #3a2016;
+    --signal: #eac84e;
+    --hero: #1b2553;
+    --hero-ink: #eef1ff;
+    --hero-muted: #a3add6;
+    --hero-line: #2e3a72;
+    --hero-accent: #c4d0ff;
+    --scrim: rgba(0, 0, 0, 0.62);
   }
 }
 
@@ -30,8 +58,8 @@
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--paper);
+  color: var(--ink);
   font-family:
     system-ui,
     -apple-system,
@@ -39,46 +67,83 @@ body {
     Roboto,
     sans-serif;
   line-height: 1.4;
-}
-
-h2 {
-  margin: 0 0 16px;
-  font-size: 1.2rem;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
 }
 
-input {
-  width: 100%;
-  padding: 10px 12px;
-  font: inherit;
-  color: inherit;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: -1px;
+.muted {
+  color: var(--muted);
 }
 
-button {
-  padding: 12px 16px;
+.btn {
+  padding: 12px 18px;
   font: inherit;
   font-weight: 600;
-  color: #fff;
+  color: var(--accent-ink);
   background: var(--accent);
-  border: none;
-  border-radius: 8px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
   cursor: pointer;
 }
 
-button:hover {
-  background: var(--accent-hover);
+.btn.ghost {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line);
+}
+
+.btn.small {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.btn.wide {
+  width: 100%;
+}
+
+.pill {
+  flex: none;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--muted);
+  background: var(--chip);
+  border-radius: 999px;
+}
+
+.pill.up {
+  color: var(--up);
+  background: var(--up-soft);
+}
+
+.pill.edge,
+.pill.test {
+  color: var(--edge);
+  background: var(--edge-soft);
+}
+
+.pill.fail {
+  color: var(--fail);
+  background: var(--fail-soft);
+}
+
+.pill.hold {
+  color: var(--accent);
+  background: var(--accent-soft);
 }

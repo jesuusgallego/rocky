@@ -1,0 +1,32 @@
+<div class="overlay" (click)="cancelled.emit()">
+  <div
+    class="sheet"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sheet-title"
+    (click)="$event.stopPropagation()"
+  >
+    <h3 id="sheet-title">{{ title() }}</h3>
+    @if (subtitle()) {
+      <p class="subtitle">{{ subtitle() }}</p>
+    }
+
+    <div class="stepper">
+      <button type="button" class="round" aria-label="Restar" (click)="change(-1)">−</button>
+      <p class="value" aria-live="polite">
+        {{ value() }}<span class="unit"> {{ unitLabel() }}</span>
+      </p>
+      <button type="button" class="round" aria-label="Sumar" (click)="change(1)">+</button>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn ghost" (click)="cancelled.emit()">Cancelar</button>
+      @if (canRemove()) {
+        <button type="button" class="btn ghost" (click)="removed.emit()">Quitar</button>
+      }
+      <button type="button" class="btn grow" (click)="saved.emit(value())">
+        {{ saveLabel() }}
+      </button>
+    </div>
+  </div>
+</div>

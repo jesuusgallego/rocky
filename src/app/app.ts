@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { WorkoutForm } from './workouts/workout-form/workout-form';
-import { WorkoutHistory } from './workouts/workout-history/workout-history';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [WorkoutForm, WorkoutHistory],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

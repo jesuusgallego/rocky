@@ -1,9 +1,12 @@
-<header>
-  <h1>Rocky</h1>
-  <p>Tu registro de entrenamientos</p>
+<header class="top">
+  <a class="brand" routerLink="/hoy">Rocky</a>
+  <nav class="tabs" aria-label="Secciones">
+    <a routerLink="/hoy" routerLinkActive="active" ariaCurrentWhenActive="page">Hoy</a>
+    <a routerLink="/progreso" routerLinkActive="active" ariaCurrentWhenActive="page">Progreso</a>
+  </nav>
 </header>
 
 <main>
-  <app-workout-form />
-  <app-workout-history />
+  <!-- Aquí el router pinta la pantalla de la dirección actual -->
+  <router-outlet />
 </main>

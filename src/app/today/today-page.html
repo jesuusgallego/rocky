@@ -1,0 +1,125 @@
+@let v = view();
+
+@if (summary(); as saved) {
+  <section class="card summary" aria-labelledby="summary-title">
+    <h2 id="summary-title">{{ saved.title }}</h2>
+    <p class="muted">{{ saved.subtitle }}</p>
+    <ul class="rows">
+      @for (result of saved.results; track result.id) {
+        <li class="row">
+          <span [class]="'icon ' + result.kind">{{ icons[result.kind] }}</span>
+          <div>
+            <p class="row-title">{{ exerciseName(result.id) }}</p>
+            <p [class]="'row-text ' + result.kind">{{ result.text }}</p>
+          </div>
+        </li>
+      }
+    </ul>
+    <button type="button" class="btn wide" (click)="summary.set(null)">Listo</button>
+  </section>
+}
+
+<section class="hero">
+  <div class="hero-top">
+    <p class="date">
+      {{ now | date: "EEEE, d 'de' MMMM" }}
+      @if (v.mode === 'live') {
+        · sesión en curso
+      }
+    </p>
+    @if (v.mode !== 'live') {
+      <div class="switch" role="group" aria-label="Elegir sesión">
+        @for (routineId of routineIds; track routineId) {
+          <button
+            type="button"
+            [attr.aria-pressed]="routineId === v.routineId"
+            (click)="store.chooseRoutine(routineId)"
+          >
+            {{ routineId }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="hero-body">
+    <div>
+      <h1>{{ v.title }}</h1>
+      <p class="hero-subtitle">{{ v.subtitle }}</p>
+    </div>
+    @if (!v.later) {
+      <div
+        class="ring"
+        role="img"
+        [attr.aria-label]="v.doneSets + ' de ' + v.totalSets + ' series anotadas'"
+      >
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle class="ring-bg" cx="32" cy="32" r="27" />
+          <circle
+            class="ring-fg"
+            cx="32"
+            cy="32"
+            r="27"
+            stroke-dasharray="169.6"
+            [attr.stroke-dashoffset]="v.ringOffset"
+          />
+        </svg>
+        <div class="ring-text">
+          <b>{{ v.doneSets }}</b>
+          <span>de {{ v.totalSets }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="card verdict" aria-labelledby="verdict-title">
+  <h2 class="eyebrow" id="verdict-title">{{ v.later ? '¿Subo en la próxima?' : '¿Subo hoy?' }}</h2>
+  <ul class="rows">
+    @for (row of verdict(); track row.title) {
+      <li class="row">
+        <span [class]="'icon ' + row.kind">{{ icons[row.kind] }}</span>
+        <div>
+          <p class="row-title">{{ row.title }}</p>
+          <p class="row-text">{{ row.text }}</p>
+        </div>
+      </li>
+    }
+  </ul>
+</section>
+
+<h2 class="eyebrow list-title">
+  {{ v.later ? 'Próxima: ' + v.routine.name + ' · ' + v.routine.focus : 'Ejercicios' }}
+</h2>
+
+<div class="exercises">
+  @for (card of v.cards; track card.id) {
+    <app-exercise-card [data]="card" (setSelected)="selectSet(card, $event)" />
+  }
+</div>
+
+@if (v.mode === 'live') {
+  <section class="session-actions">
+    <p class="muted">{{ v.exercisesStarted }} de {{ v.cards.length }} ejercicios anotados</p>
+    <button type="button" class="btn wide" (click)="finish()">Guardar sesión</button>
+    <button type="button" class="btn ghost wide" (click)="discard()">Descartar sesión</button>
+  </section>
+}
+
+<p class="foot">
+  Toca una casilla para anotar la serie. Subes de nivel cuando completas todas las series al tope 2
+  sesiones seguidas (3 en dominadas y chin-ups). Si una sale por debajo, el contador vuelve a cero.
+</p>
+
+@if (openSet(); as set) {
+  <app-number-sheet
+    [title]="set.title"
+    [subtitle]="set.subtitle"
+    [unit]="set.unit"
+    [initialValue]="set.initialValue"
+    [canRemove]="set.canRemove"
+    (saved)="saveSet(set, $event)"
+    (removed)="removeSet(set)"
+    (cancelled)="openSet.set(null)"
+  />
+}

@@ -1,0 +1,209 @@
+.exercise.done {
+  opacity: 0.75;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.position {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--chip);
+  border-radius: 50%;
+}
+
+h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.target {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.big {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.per-side {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.status.up {
+  color: var(--up);
+}
+
+.status.fail {
+  color: var(--fail);
+}
+
+.status.edge,
+.status.test {
+  color: var(--edge);
+}
+
+.dots {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: var(--line);
+  border-radius: 50%;
+}
+
+.dot.on {
+  background: var(--up);
+}
+
+.sets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.set {
+  height: 52px;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: transparent;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.set.top {
+  color: var(--up);
+  background: var(--up-soft);
+  border: 2px solid var(--up);
+}
+
+.set.low {
+  color: var(--fail);
+  background: var(--fail-soft);
+  border: 2px solid var(--fail);
+}
+
+.set.record {
+  box-shadow: 0 0 0 3px var(--signal);
+}
+
+.completion {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.completion.up {
+  color: var(--up);
+}
+
+.completion.fail {
+  color: var(--fail);
+}
+
+.how {
+  margin-top: 14px;
+  font-size: 0.9rem;
+}
+
+.how summary {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.note {
+  color: var(--muted);
+}
+
+.ladder {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ladder li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.ladder .number {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  background: var(--chip);
+  border-radius: 50%;
+}
+
+.ladder .past {
+  color: var(--muted);
+}
+
+.ladder .past .number {
+  color: var(--up);
+  background: var(--up-soft);
+}
+
+.ladder .current {
+  font-weight: 600;
+}
+
+.ladder .current .number {
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+.here {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--accent);
+}

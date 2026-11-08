@@ -1,0 +1,133 @@
+<section class="card best">
+  <h2 class="eyebrow">Mejor marca en dominadas</h2>
+  <div class="best-row">
+    <p class="best-number">{{ best() || '—' }}</p>
+    <p class="muted">
+      {{
+        best()
+          ? 'dominadas seguidas sin soltar la barra'
+          : 'aún sin marca: anota un test o una sesión'
+      }}
+    </p>
+  </div>
+  <div class="goal" role="img" [attr.aria-label]="best() + ' de ' + goal + ' dominadas'">
+    @for (dot of goalDots(); track dot.number) {
+      <span class="goal-dot" [class.done]="dot.done">{{ dot.number }}</span>
+    }
+  </div>
+  <p class="muted small">
+    {{
+      best() >= goal
+        ? 'Objetivo de ' + goal + ' conseguido.'
+        : 'Objetivo: ' + goal + ' dominadas · te faltan ' + (goal - best())
+    }}
+  </p>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2 class="eyebrow">Tests de máximo</h2>
+    <button type="button" class="btn ghost small" (click)="testSheetOpen.set(true)">
+      Anotar test
+    </button>
+  </div>
+  @if (testMessage()) {
+    <p class="message">{{ testMessage() }}</p>
+  }
+  @for (test of tests(); track test.date) {
+    <div class="row">
+      <span>{{ test.date | date: 'd MMM y' }}</span>
+      <b>{{ test.reps }}</b>
+    </div>
+  } @empty {
+    <p class="muted small">
+      Aún no hay tests. Toca uno cuando llegues a 5 × 5, o anótalo cuando quieras.
+    </p>
+  }
+</section>
+
+<section class="card">
+  <h2 class="eyebrow">En qué nivel estás</h2>
+  @for (group of levels(); track group.title) {
+    <h3 class="group">{{ group.title }}</h3>
+    @for (row of group.rows; track row.id) {
+      <div class="row">
+        <div>
+          <p class="row-title">{{ row.name }}</p>
+          <p class="muted small">{{ row.description }}</p>
+        </div>
+        <div class="level">
+          <span class="small">{{ row.levelText }}</span>
+          @if (row.segments.length) {
+            <span class="segments">
+              @for (on of row.segments; track $index) {
+                <span class="segment" [class.on]="on"></span>
+              }
+            </span>
+          }
+        </div>
+      </div>
+    }
+  }
+</section>
+
+<section class="card">
+  <h2 class="eyebrow">Sesiones</h2>
+  @for (session of history(); track session.key) {
+    <div class="row">
+      <div>
+        <p class="row-title">{{ session.name }}</p>
+        <p class="muted small">
+          {{ session.date | date: 'EEE d MMM' }} · {{ session.pullUps }} dominadas y chin-ups
+        </p>
+      </div>
+      @if (session.deload) {
+        <span class="pill">Descarga</span>
+      } @else if (session.ups) {
+        <span class="pill up"
+          >↑ {{ session.ups }} {{ session.ups === 1 ? 'nivel' : 'niveles' }}</span
+        >
+      }
+    </div>
+  } @empty {
+    <p class="muted small">
+      Aún no hay sesiones guardadas. Anota series en Hoy y pulsa Guardar sesión.
+    </p>
+  }
+</section>
+
+<section class="card">
+  <h2 class="eyebrow">Copia de seguridad</h2>
+  <p class="muted small">
+    Tus datos se guardan solo en este navegador. Exporta una copia de vez en cuando y, si cambias de
+    móvil o de navegador, impórtala para seguir donde lo dejaste.
+  </p>
+  <div class="backup-actions">
+    <button type="button" class="btn small" (click)="exportBackup()">Exportar copia</button>
+    <button type="button" class="btn ghost small" (click)="fileInput.click()">
+      Importar copia
+    </button>
+    <input
+      #fileInput
+      type="file"
+      accept="application/json,.json"
+      hidden
+      (change)="importBackup(fileInput)"
+    />
+  </div>
+  @if (backupMessage()) {
+    <p class="message">{{ backupMessage() }}</p>
+  }
+</section>
+
+@if (testSheetOpen()) {
+  <app-number-sheet
+    title="Test de máximo"
+    subtitle="Una serie de dominadas hasta el fallo, bien descansado."
+    unit="reps"
+    saveLabel="Guardar test"
+    [initialValue]="best() || 1"
+    (saved)="saveTest($event)"
+    (cancelled)="testSheetOpen.set(false)"
+  />
+}

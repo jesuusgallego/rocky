@@ -1,0 +1,84 @@
+@let card = data();
+<article class="card exercise" [class.done]="isDone()">
+  <header class="head">
+    <span class="position">{{ isDone() ? '✓' : card.position + 1 }}</span>
+    <h3>{{ card.exercise.name }}</h3>
+    <span [class]="'pill ' + card.status.kind">{{ card.status.label }}</span>
+  </header>
+
+  <div class="target">
+    <p class="big">
+      {{ card.plan.isTest ? 'Máx.' : target() }}
+      @if (card.plan.perSide) {
+        <span class="per-side">por lado</span>
+      }
+    </p>
+    <div class="meta">
+      <span>{{ card.plan.variant }}</span>
+      <span>Descanso {{ rest() }}</span>
+    </div>
+  </div>
+
+  <p [class]="'status ' + card.status.kind">
+    <span>{{ card.status.text }}</span>
+    @if (dots().length) {
+      <span
+        class="dots"
+        role="img"
+        [attr.aria-label]="
+          card.status.dots?.done + ' de ' + card.status.dots?.total + ' sesiones al tope'
+        "
+      >
+        @for (on of dots(); track $index) {
+          <span class="dot" [class.on]="on"></span>
+        }
+      </span>
+    }
+  </p>
+
+  <div class="sets">
+    @for (set of sets(); track set.index) {
+      <button
+        type="button"
+        class="set"
+        [class.top]="set.result === 'top'"
+        [class.low]="set.result === 'low'"
+        [class.record]="set.record"
+        [attr.aria-label]="set.label"
+        (click)="setSelected.emit(set.index)"
+      >
+        {{ set.text }}
+      </button>
+    }
+  </div>
+
+  @if (completion(); as completion) {
+    <p class="completion" [class.up]="completion.ok" [class.fail]="!completion.ok">
+      {{ completion.text }}
+    </p>
+  }
+
+  <details class="how">
+    <summary>Cómo se hace y niveles</summary>
+    <p>{{ card.exercise.howTo }}</p>
+    @if (card.exercise.note) {
+      <p class="note">{{ card.exercise.note }}</p>
+    }
+    @if (ladder().length) {
+      <ol class="ladder">
+        @for (level of ladder(); track level.index) {
+          <li [class.past]="level.past" [class.current]="level.current">
+            <span class="number">{{ level.index + 1 }}</span>
+            <span>{{ level.text }}</span>
+            @if (level.current) {
+              <span class="here">Estás aquí</span>
+            }
+          </li>
+        }
+      </ol>
+      @if (card.exercise.kind === 'endless') {
+        <p class="note">… y sigue igual, subiendo peso.</p>
+      }
+    }
+  </details>
+</article>
